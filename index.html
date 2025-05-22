@@ -6,13 +6,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Pirat game studio</title>
     <link rel="stylesheet" href="style.css"/>
+    <style>
+      @keyframes glitch {
+        0% { transform: translate(0); }
+        20% { transform: translate(-2px, 2px); }
+        40% { transform: translate(-2px, -2px); }
+        60% { transform: translate(2px, 2px); }
+        80% { transform: translate(2px, -2px); }
+        100% { transform: translate(0); }
+      }
+
+      .glitch {
+        position: relative;
+        color: #0ff;
+        animation: glitch 1s infinite;
+      }
+
+      .glitch::before,
+      .glitch::after {
+        content: attr(data-text);
+        position: absolute;
+        left: 0;
+        width: 100%;
+        opacity: 0.7;
+      }
+
+      .glitch::before {
+        animation: glitch 1s infinite;
+        top: -2px;
+        left: 2px;
+        color: red;
+        z-index: -1;
+      }
+
+      .glitch::after {
+        animation: glitch 1s infinite;
+        top: 2px;
+        left: -2px;
+        color: blue;
+        z-index: -1;
+      }
+    </style>
 </head>
 <body>
     <header>
         <nav>
             <div class="logo-container">
-                <img src="logodostornki.png" alt="Logo" class="logo-img" />
-                <span class="logo-text">Pirat game studio *nazwa w trakcie wymyślania*</span>
+                <img src="logodostornki.png" alt="Logo" class="logo-img glitch" data-text="Pirat game studio" />
+                <span class="logo-text glitch" data-text="Pirat game studio *nazwa w trakcie wymyślania*">
+                  Pirat game studio *nazwa w trakcie wymyślania*
+                </span>
             </div>
             <ul class="nav-links">
                 <li><a href="index.html">Strona główna</a></li>
@@ -25,7 +68,7 @@
 
     <main>
         <section class="hero">
-            <h1>Witaj na mojej stronie</h1>
+            <h1 class="glitch" data-text="Witaj na mojej stronie">Witaj na mojej stronie</h1>
             <p>Mechanika gry horrory czemu tego nie połączyć?</p>
             <a href="projekty.html" class="btn">Zobacz moje projekty</a>
         </section>
@@ -54,39 +97,14 @@
     </footer>
 
     <!-- Ukryty przycisk admina -->
-    <button id="admin-btn" style="position:fixed; bottom:10px; right:10px; opacity:0.1; z-index:9999;">⚙</button>
-
-    <!-- Modal logowania -->
-    <div id="admin-login" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
-     background:white; padding:20px; border:1px solid #ccc; z-index:10000;">
-      <input type="password" id="admin-pass" placeholder="Hasło admina" />
-      <button onclick="checkPass()">Zaloguj</button>
-    </div>
+    <div class="glitch-button">Kliknij mnie</div>
 
     <script>
-      const correctPassword = 'admin123'; // ZMIEŃ HASŁO
-
       const adminBtn = document.getElementById('admin-btn');
-      const adminLogin = document.getElementById('admin-login');
-      const adminPassInput = document.getElementById('admin-pass');
-
       adminBtn.addEventListener('click', () => {
-        adminLogin.style.display = 'block';
-        adminPassInput.focus();
+        window.location.href = 'admin.html';
       });
-
-      function checkPass() {
-        const pass = adminPassInput.value;
-        if (pass === correctPassword) {
-          window.location.href = 'admin.html'; // upewnij się, że admin.html jest w katalogu głównym
-        } else {
-          alert('Błędne hasło');
-          adminPassInput.value = '';
-          adminPassInput.focus();
-        }
-      }
     </script>
 
 </body>
 </html>
-
