@@ -52,5 +52,33 @@
     <footer>
         &copy; 2025 Piratuniek / Marcin Piłat. Wszystkie prawa zarezerwowane.
     </footer>
+
+<!-- Ukryty przycisk admina -->
+<button id="admin-btn" style="position:fixed; bottom:10px; right:10px; opacity:0.1; z-index:9999;">⚙</button>
+
+<!-- Modal logowania -->
+<div id="admin-login" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%);
+ background:white; padding:20px; border:1px solid #ccc; z-index:10000;">
+  <input type="password" id="admin-pass" placeholder="Hasło admina" />
+  <button onclick="checkPass()">Zaloguj</button>
+</div>
+
+<script>
+  const correctPassword = 'admin123'; // ZMIEŃ HASŁO
+
+  document.getElementById('admin-btn').addEventListener('click', () => {
+    document.getElementById('admin-login').style.display = 'block';
+  });
+
+  function checkPass() {
+    const pass = document.getElementById('admin-pass').value;
+    if (pass === correctPassword) {
+      window.location.href = '/admin.html';
+    } else {
+      alert('Błędne hasło');
+    }
+  }
+</script>
+
 </body>
 </html>
