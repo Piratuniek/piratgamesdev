@@ -1,232 +1,132 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Admin Panel - Live Editor</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- CodeMirror CSS i JS CDN -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.css" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/codemirror.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.5/mode/htmlmixed/htmlmixed.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Hack Panel</title>
   <style>
-    body { font-family: Arial, sans-serif; max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
-    #page-selector { margin-bottom: 1rem; }
-    #editor { border: 1px solid #ccc; height: 500px; }
-    #message { margin-top: 1rem; color: green; }
-    #error { margin-top: 1rem; color: red; }
-    #upload-section { margin-top: 1rem; }
-    #logout-btn { margin-top: 1rem; }
+    body {
+      margin: 0;
+      padding: 0;
+      background: black;
+      color: #00ff00;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 1.2rem;
+      overflow: hidden;
+    }
+
+    .terminal {
+      padding: 20px;
+      white-space: pre-wrap;
+    }
+
+    .cursor {
+      display: inline-block;
+      background-color: #00ff00;
+      width: 10px;
+      height: 20px;
+      margin-left: 5px;
+      animation: blink 1s steps(2, start) infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .scrolling-code {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.05;
+    }
+
+    .code-line {
+      animation: scroll 10s linear infinite;
+      white-space: nowrap;
+    }
+
+    @keyframes scroll {
+      0% {
+        transform: translateY(100%);
+      }
+      100% {
+        transform: translateY(-100%);
+      }
+    }
+
+    input {
+      background: black;
+      color: #00ff00;
+      border: none;
+      outline: none;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 1.2rem;
+      width: 300px;
+    }
   </style>
 </head>
 <body>
+  <div class="scrolling-code" id="scrolling"></div>
 
-  <h1>Admin Panel - Live Editor</h1>
-
-  <div id="login-section">
-    <label>Email: <input type="email" id="email" /></label><br />
-    <label>Hasło: <input type="password" id="password" /></label><br />
-    <button id="login-btn">Zaloguj się</button>
-    <div id="login-message" style="color:red;"></div>
+  <div class="terminal" id="terminal">
+    Login: <input type="text" id="login" autofocus><br>
+    Password: <input type="password" id="password"><br>
+    <span class="cursor"></span>
   </div>
 
-  <div id="admin-panel" style="display:none;">
-    <label for="page-selector">Wybierz podstronę:</label>
-    <select id="page-selector"></select>
+  <script>
+    const scrolling = document.getElementById("scrolling");
+    const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
 
-    <div id="editor"></div>
-
-    <button id="save-btn">Zapisz zmiany</button>
-
-    <div id="upload-section">
-      <h3>Upload plików</h3>
-      <input type="file" id="file-input" multiple />
-      <button id="upload-btn">Wgraj pliki</button>
-      <div id="upload-message"></div>
-      <div id="uploaded-files"></div>
-    </div>
-
-    <button id="logout-btn">Wyloguj się</button>
-
-    <div id="message"></div>
-    <div id="error"></div>
-  </div>
-
-<script>
-  const SUPABASE_URL = 'https://xkovpglpyrospmiqwhnb.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhrb3ZwZ2xweXJvc3BtaXF3aG5iIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDc5MTc5NDEsImV4cCI6MjA2MzQ5Mzk0MX0.zRK7ha2_OL3dtv0X8wi_zslnHlb6EqtKRczLsp9zkP8';
-
-  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-  let editor;
-  let currentPageSlug = null;
-  let pagesList = [];
-
-  const loginSection = document.getElementById('login-section');
-  const adminPanel = document.getElementById('admin-panel');
-  const loginBtn = document.getElementById('login-btn');
-  const logoutBtn = document.getElementById('logout-btn');
-  const emailInput = document.getElementById('email');
-  const passwordInput = document.getElementById('password');
-  const loginMessage = document.getElementById('login-message');
-  const pageSelector = document.getElementById('page-selector');
-  const saveBtn = document.getElementById('save-btn');
-  const messageDiv = document.getElementById('message');
-  const errorDiv = document.getElementById('error');
-  const fileInput = document.getElementById('file-input');
-  const uploadBtn = document.getElementById('upload-btn');
-  const uploadMessage = document.getElementById('upload-message');
-  const uploadedFilesDiv = document.getElementById('uploaded-files');
-
-  async function checkAuth() {
-    const { data } = await supabase.auth.getUser();
-    if (data.user) {
-      loginSection.style.display = 'none';
-      adminPanel.style.display = 'block';
-      await loadPagesList();
-      return true;
+    function randomLine(length = 80) {
+      let line = '';
+      for (let i = 0; i < length; i++) {
+        line += charset[Math.floor(Math.random() * charset.length)];
+      }
+      return line;
     }
-    return false;
-  }
 
-  async function login() {
-    loginMessage.textContent = '';
-    const email = emailInput.value.trim();
-    const password = passwordInput.value.trim();
-    if (!email || !password) {
-      loginMessage.textContent = 'Podaj email i hasło!';
-      return;
+    for (let i = 0; i < 100; i++) {
+      const line = document.createElement('div');
+      line.className = 'code-line';
+      line.textContent = randomLine();
+      line.style.position = 'absolute';
+      line.style.top = `${i * 20}px`;
+      scrolling.appendChild(line);
     }
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      loginMessage.textContent = 'Błąd logowania: ' + error.message;
-      return;
-    }
-    loginSection.style.display = 'none';
-    adminPanel.style.display = 'block';
-    await loadPagesList();
-  }
 
-  async function logout() {
-    await supabase.auth.signOut();
-    adminPanel.style.display = 'none';
-    loginSection.style.display = 'block';
-    loginMessage.textContent = '';
-    emailInput.value = '';
-    passwordInput.value = '';
-  }
+    const loginInput = document.getElementById('login');
+    const passwordInput = document.getElementById('password');
+    const terminal = document.getElementById('terminal');
 
-  async function loadPagesList() {
-    const { data, error } = await supabase.from('pages').select('slug');
-    if (error) {
-      errorDiv.textContent = 'Błąd ładowania listy stron: ' + error.message;
-      return;
+    function checkLogin() {
+      const login = loginInput.value;
+      const password = passwordInput.value;
+
+      if (login === 'admin' && password === '1234') {
+        terminal.innerHTML = `
+          Access granted.<br>
+          Connecting to Supabase...<br>
+          Panel ready.<br>
+          > Awaiting commands...<br>
+          <span class="cursor"></span>
+        `;
+      } else {
+        terminal.innerHTML += `\nAccess denied. Try again.<br>`;
+      }
     }
-    pagesList = data.map(p => p.slug);
-    pageSelector.innerHTML = '';
-    pagesList.forEach(slug => {
-      const opt = document.createElement('option');
-      opt.value = slug;
-      opt.textContent = slug;
-      pageSelector.appendChild(opt);
+
+    passwordInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        checkLogin();
+      }
     });
-    if (pagesList.length > 0) {
-      pageSelector.value = pagesList[0];
-      await loadPageContent(pagesList[0]);
-    } else {
-      pageSelector.innerHTML = '<option value="">-- brak stron w bazie --</option>';
-      editor.setValue('<!-- Dodaj nową stronę wpisując kod tutaj -->');
-    }
-  }
-
-  async function loadPageContent(slug) {
-    currentPageSlug = slug;
-    messageDiv.textContent = 'Ładowanie zawartości strony...';
-    const { data, error } = await supabase.from('pages').select('content').eq('slug', slug).single();
-    if (error) {
-      errorDiv.textContent = 'Błąd ładowania strony: ' + error.message;
-      editor.setValue('');
-      messageDiv.textContent = '';
-      return;
-    }
-    editor.setValue(data.content || '');
-    messageDiv.textContent = 'Załadowano stronę: ' + slug;
-  }
-
-  async function savePageContent() {
-    if (!currentPageSlug) {
-      errorDiv.textContent = 'Nie wybrano strony do zapisu!';
-      return;
-    }
-    messageDiv.textContent = 'Zapisywanie...';
-    errorDiv.textContent = '';
-    const content = editor.getValue();
-    const { data: existing, error: fetchErr } = await supabase.from('pages').select('slug').eq('slug', currentPageSlug).single();
-    if (fetchErr && fetchErr.code !== 'PGRST116') {
-      errorDiv.textContent = 'Błąd podczas sprawdzania istnienia strony: ' + fetchErr.message;
-      return;
-    }
-    if (existing) {
-      const { error } = await supabase.from('pages').update({ content }).eq('slug', currentPageSlug);
-      if (error) {
-        errorDiv.textContent = 'Błąd zapisu: ' + error.message;
-        return;
-      }
-    } else {
-      const { error } = await supabase.from('pages').insert({ slug: currentPageSlug, content });
-      if (error) {
-        errorDiv.textContent = 'Błąd zapisu: ' + error.message;
-        return;
-      }
-      await loadPagesList();
-    }
-    messageDiv.textContent = 'Zapisano pomyślnie.';
-  }
-
-  async function uploadFiles() {
-    uploadMessage.textContent = '';
-    uploadedFilesDiv.innerHTML = '';
-    const files = fileInput.files;
-    if (files.length === 0) {
-      uploadMessage.textContent = 'Wybierz pliki do wgrania.';
-      return;
-    }
-    uploadMessage.textContent = 'Wgrywanie...';
-    for (const file of files) {
-      const filePath = `uploads/${Date.now()}_${file.name}`;
-      const { error } = await supabase.storage.from('public').upload(filePath, file);
-      if (error) {
-        uploadMessage.textContent = 'Błąd uploadu: ' + error.message;
-        return;
-      }
-      const url = supabase.storage.from('public').getPublicUrl(filePath).data.publicUrl;
-      const link = document.createElement('a');
-      link.href = url;
-      link.textContent = url;
-      link.target = '_blank';
-      uploadedFilesDiv.appendChild(link);
-      uploadedFilesDiv.appendChild(document.createElement('br'));
-    }
-    uploadMessage.textContent = 'Wgrano pomyślnie.';
-  }
-
-  loginBtn.onclick = login;
-  logoutBtn.onclick = logout;
-  saveBtn.onclick = savePageContent;
-  pageSelector.onchange = e => loadPageContent(e.target.value);
-  uploadBtn.onclick = uploadFiles;
-
-  window.onload = async () => {
-    editor = CodeMirror(document.getElementById('editor'), {
-      mode: 'htmlmixed',
-      lineNumbers: true,
-      lineWrapping: true,
-      tabSize: 2,
-      autofocus: true,
-    });
-
-    await checkAuth();
-  };
-</script>
-
+  </script>
 </body>
 </html>
