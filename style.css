@@ -213,3 +213,38 @@ footer {
     opacity: 0.3;
   }
 }
+
+
+.glitch-pixels {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  display: flex;
+  gap: 4px;
+  z-index: 9999;
+}
+
+.glitch-pixels .pixel {
+  width: 8px;
+  height: 8px;
+  background-color: red;
+  animation: glitchAnim 1s infinite;
+}
+
+.glitch-pixels .pixel:nth-child(2) {
+  animation-delay: 0.2s;
+  background-color: green;
+}
+
+.glitch-pixels .pixel:nth-child(3) {
+  animation-delay: 0.4s;
+  background-color: blue;
+}
+
+@keyframes glitchAnim {
+  0%   { transform: translate(0, 0); opacity: 1; }
+  25%  { transform: translate(-1px, 1px); opacity: 0.8; }
+  50%  { transform: translate(1px, -1px); opacity: 0.6; }
+  75%  { transform: translate(-1px, -1px); opacity: 0.9; }
+  100% { transform: translate(1px, 1px); opacity: 1; }
+}
