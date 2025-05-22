@@ -1,0 +1,493 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue', sans-serif;
+    background-color: #fff;
+    color: #111;
+    line-height: 1.6;
+}
+
+header {
+    background: #f5f5f5;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.logo-img {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    border-radius: 8px; 
+    box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.logo-text {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #111;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: #111;
+    font-weight: 500;
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    display: block;
+    height: 2px;
+    background-color: #111;
+    width: 0;
+    transition: width 0.3s;
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+.hero {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.8rem 1.5rem;
+    background-color: #111;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background-color: #333;
+}
+
+.btn.secondary {
+    background-color: #666;
+}
+
+.about {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2rem;
+    padding: 4rem 2rem;
+    max-width: 1000px;
+    margin: auto;
+}
+
+.about img {
+    max-width: 100%;
+    width: 400px;
+    border-radius: 8px;
+}
+
+.about .text {
+    flex: 1;
+}
+
+.funny-contact {
+    text-align: center;
+    padding: 5rem 2rem;
+    font-family: 'Helvetica Neue', sans-serif;
+}
+
+.funny-contact .emoji {
+    font-size: 8rem;
+    margin-bottom: 1rem;
+    animation: float 2s ease-in-out infinite;
+}
+
+.funny-contact h1 {
+    font-size: 2rem;
+    color: #444;
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+footer {
+    text-align: center;
+    padding: 2rem;
+    background-color: #f5f5f5;
+    margin-top: 2rem;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 768px) {
+    .about {
+        flex-direction: column;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.75rem;
+    }
+}
+
+
+/* === RESPONSYWNE STYLY DLA TELEFONÓW === */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        gap: 0.75rem;
+        width: 100%;
+        margin-top: 1rem;
+        align-items: flex-end;
+    }
+
+    .logo-text {
+        font-size: 1.2rem;
+    }
+
+    .hero {
+        padding: 2rem 1rem;
+        text-align: center;
+    }
+
+    .hero h1 {
+        font-size: 1.75rem;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    .about {
+        flex-direction: column;
+        padding: 2rem 1rem;
+    }
+
+    .about img {
+        width: 100%;
+    }
+
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    footer {
+        font-size: 0.8rem;
+    }
+}
+
+
+/* === RESPONSYWNE STYLY DLA TELEFONÓW === */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        gap: 0.75rem;
+        width: 100%;
+        margin-top: 1rem;
+        align-items: flex-end;
+    }
+
+    .logo-text {
+        font-size: 1.2rem;
+    }
+
+    .hero {
+        padding: 2rem 1rem;
+        text-align: center;
+    }
+
+    .hero h1 {
+        font-size: 1.75rem;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+
+    .about {
+        flex-direction: column;
+        padding: 2rem 1rem;
+    }
+
+    .about img {
+        width: 100%;
+    }
+
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+
+    footer {
+        font-size: 0.8rem;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .nav-links a {
+        display: block;
+        background-color: #eee;
+        padding: 1rem;
+        border-radius: 4px;
+        width: 100%;
+        text-align: left;
+        color: #111;
+        font-weight: bold;
+    }
+
+    .nav-links a:hover {
+        background-color: #ddd;
+    }
+}
+
+
+/* === MINIMALNA WYSOKOŚĆ STRONY NA DESKTOP === */
+body, html {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+
+/* === STOPKA PRZYKLEJONA DO DOŁU === */
+body, html {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+main {
+    flex: 1;
+}
+
+
+/* === ZAOKRĄGLONE SZARE TŁO ZA ELEMENTAMI === */
+.hero,
+.funny-contact,
+.about .text {
+    background-color: #f0f0f0;
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Trochę odstępu nad/below */
+.hero {
+    margin: 2rem;
+}
+
+.about {
+    gap: 2rem;
+}
+
+
+/* === LEPSZY WYGLĄD FORMULARZA === */
+input[type="email"],
+textarea {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    margin-bottom: 1rem;
+}
+
+input[type="email"]:focus,
+textarea:focus {
+    border-color: #666;
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.05);
+    outline: none;
+}
+
+button.btn {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button.btn:hover {
+    background-color: #555;
+    transform: scale(1.02);
+}
+
+
+/* === JASNY BŁĘKITNY STYL DLA WSZYSTKICH PRZYCISKÓW === */
+button,
+.btn,
+.nav-links a,
+a.btn {
+    background-color: #cce7ff;
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover,
+.btn:hover,
+.nav-links a:hover,
+a.btn:hover {
+    background-color: #b3dcff;
+    transform: scale(1.02);
+    color: #000;
+}
+
+
+/* === RESET PODKREŚLEŃ NA LINKACH === */
+.nav-links a {
+    text-decoration: none;
+    background-color: #cce7ff;
+    color: #000;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: bold;
+    display: inline-block;
+}
+
+.nav-links a::after {
+    content: none; /* usunięcie podkreślenia na hoverze */
+}
+
+/* === OGÓLNY STYL WSZYSTKICH PRZYCISKÓW === */
+button,
+.btn,
+a.btn,
+input[type="submit"] {
+    background-color: #cce7ff;
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+button:hover,
+.btn:hover,
+a.btn:hover,
+input[type="submit"]:hover {
+    background-color: #b3dcff;
+    transform: scale(1.02);
+}
+
+/* === POPRAWA ANIMACJI: POCZĄTEK OD ZAOKRĄGLENIA === */
+button,
+.btn,
+a.btn,
+input[type="submit"],
+.nav-links a {
+    transform-origin: center center;
+}
+
+
+/* === BŁĘKITNY STYL DLA FORMULARZA <input type="submit"> === */
+input[type="submit"],
+form button[type="submit"] {
+    background-color: #cce7ff;
+    color: #000;
+    border: none;
+    border-radius: 12px;
+    padding: 0.75rem 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+input[type="submit"]:hover,
+form button[type="submit"]:hover {
+    background-color: #b3dcff;
+    transform: scale(1.02);
+}
+
+
+/* === POPRAWKA: BŁĘKITNE LINKI W FORMIE PRZYCISKÓW (.btn, a.btn) === */
+a.btn,
+a.button,
+.about .btn,
+.about a {
+    background-color: #cce7ff !important;
+    color: #000 !important;
+    padding: 0.75rem 1.5rem;
+    border-radius: 12px;
+    font-weight: bold;
+    text-decoration: none;
+    display: inline-block;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+a.btn:hover,
+a.button:hover,
+.about .btn:hover,
+.about a:hover {
+    background-color: #b3dcff !important;
+    transform: scale(1.02);
+}

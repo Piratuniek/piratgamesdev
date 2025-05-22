@@ -1,0 +1,70 @@
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Kontakt</title>
+    <link rel="stylesheet" href="style.css"/>
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script>
+      (function(){
+        emailjs.init("6STTdnvZa5gLQtgeS");
+      })();
+    </script>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo-container">
+                <img src="logodostornki.png" alt="Logo" class="logo-img" />
+                <span class="logo-text">Pirat game studio</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Strona główna</a></li>
+                <li><a href="projekty.html">Projekty</a></li>
+                <li><a href="kontakt.html">Kontakt</a></li>
+                <li><a href="firma.html">O naszej firmie</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="contact-form hero">
+            <h1>Skontaktuj się z nami</h1>
+            <form id="kontakt-form">
+                <label for="email">Twój e-mail:</label><br>
+                <input type="email" name="from_email" id="email" required><br><br>
+
+                <label for="message">Wiadomość:</label><br>
+                <textarea name="message" id="message" rows="5" required></textarea><br><br>
+
+                <button type="submit" class="btn">Wyślij</button>
+            </form>
+            <p id="form-status" style="margin-top: 1rem;"></p>
+        </section>
+    </main>
+
+    <footer>
+        &copy; 2025 Pirat Game Studio. Wszelkie prawa zastrzeżone.
+    </footer>
+
+    <script>
+    document.getElementById("kontakt-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const status = document.getElementById("form-status");
+
+      emailjs.sendForm("service_qnnpb25", "template_jkd0own", this)
+        .then(function() {
+          status.innerText = "✅ Wiadomość została wysłana!";
+        }, function(error) {
+          status.innerText = "❌ Błąd podczas wysyłania. Spróbuj ponownie.";
+          console.error(error);
+        });
+
+      this.reset();
+    });
+    </script>
+</body>
+</html>
