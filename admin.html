@@ -15,9 +15,21 @@
       overflow: hidden;
     }
 
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      opacity: 0.05;
+    }
+
     .terminal {
       padding: 20px;
       white-space: pre-wrap;
+      position: relative;
+      z-index: 1;
     }
 
     .cursor {
@@ -34,32 +46,6 @@
       50% { opacity: 0; }
     }
 
-    .scrolling-code {
-      position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-      overflow: hidden;
-      pointer-events: none;
-      z-index: 0;
-      opacity: 0.05;
-    }
-
-    .code-line {
-      animation: scroll 10s linear infinite;
-      white-space: nowrap;
-    }
-
-    @keyframes scroll {
-      0% {
-        transform: translateY(100%);
-      }
-      100% {
-        transform: translateY(-100%);
-      }
-    }
-
     input {
       background: black;
       color: #00ff00;
@@ -72,7 +58,7 @@
   </style>
 </head>
 <body>
-  <div class="scrolling-code" id="scrolling"></div>
+  <canvas id="matrix"></canvas>
 
   <div class="terminal" id="terminal">
     Login: <input type="text" id="login" autofocus><br>
@@ -81,25 +67,41 @@
   </div>
 
   <script>
-    const scrolling = document.getElementById("scrolling");
-    const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
 
-    function randomLine(length = 80) {
-      let line = '';
-      for (let i = 0; i < length; i++) {
-        line += charset[Math.floor(Math.random() * charset.length)];
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+    const fontSize = 16;
+    const columns = Math.floor(width / fontSize);
+    const drops = Array(columns).fill(1);
+
+    function draw() {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = '#0f0';
+      ctx.font = fontSize + 'px Courier New';
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+
+        drops[i]++;
       }
-      return line;
     }
 
-    for (let i = 0; i < 100; i++) {
-      const line = document.createElement('div');
-      line.className = 'code-line';
-      line.textContent = randomLine();
-      line.style.position = 'absolute';
-      line.style.top = `${i * 20}px`;
-      scrolling.appendChild(line);
-    }
+    setInterval(draw, 33);
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
 
     const loginInput = document.getElementById('login');
     const passwordInput = document.getElementById('password');
