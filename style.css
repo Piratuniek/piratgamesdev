@@ -491,3 +491,57 @@ a.button:hover,
     background-color: #b3dcff !important;
     transform: scale(1.02);
 }
+
+.glitch-button {
+  font-family: monospace;
+  font-weight: bold;
+  font-size: 1rem;
+  color: white;
+  background: black;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  border: 2px solid white;
+  border-radius: 8px;
+}
+.glitch-button::before,
+.glitch-button::after {
+  content: attr(aria-hidden);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.glitch-button::before {
+  left: 2px;
+  text-shadow: -2px 0 red;
+  animation: glitch 1s infinite linear alternate-reverse;
+}
+.glitch-button::after {
+  left: -2px;
+  text-shadow: -2px 0 blue;
+  animation: glitch 1.2s infinite linear alternate-reverse;
+}
+@keyframes glitch {
+  0% {
+    clip-path: inset(0 0 80% 0);
+  }
+  20% {
+    clip-path: inset(10% 0 60% 0);
+  }
+  40% {
+    clip-path: inset(40% 0 30% 0);
+  }
+  60% {
+    clip-path: inset(80% 0 10% 0);
+  }
+  80% {
+    clip-path: inset(50% 0 30% 0);
+  }
+  100% {
+    clip-path: inset(60% 0 20% 0);
+  }
+}
