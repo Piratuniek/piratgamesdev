@@ -499,11 +499,11 @@ a.button:hover,
   background: black;
   font-size: 2rem;
   padding: 1rem 2rem;
+  border: none;
+  cursor: pointer;
   text-transform: uppercase;
   overflow: hidden;
   letter-spacing: 2px;
-  border: 2px solid white;
-  margin: 2rem;
 }
 
 .glitch-button::before,
@@ -513,57 +513,43 @@ a.button:hover,
   left: 0;
   width: 100%;
   height: 100%;
-  top: 0;
   background: black;
-  color: white;
   overflow: hidden;
-  z-index: -1;
 }
 
 .glitch-button::before {
+  top: -2px;
   left: 2px;
-  text-shadow: -2px 0 red;
+  color: #f0f;
+  z-index: -1;
   animation: glitch 1s infinite linear alternate-reverse;
 }
 
 .glitch-button::after {
+  top: 2px;
   left: -2px;
-  text-shadow: 2px 0 blue;
+  color: #0ff;
+  z-index: -1;
   animation: glitch 1s infinite linear alternate;
 }
 
 @keyframes glitch {
   0% {
-    clip-path: inset(0 0 90% 0);
+    clip: rect(0, 9999px, 0, 0);
+  }
+  5% {
+    clip: rect(0, 9999px, 5px, 0);
   }
   10% {
-    clip-path: inset(10% 0 85% 0);
+    clip: rect(0, 9999px, 10px, 0);
+  }
+  15% {
+    clip: rect(0, 9999px, 15px, 0);
   }
   20% {
-    clip-path: inset(20% 0 75% 0);
-  }
-  30% {
-    clip-path: inset(0 0 50% 0);
-  }
-  40% {
-    clip-path: inset(30% 0 40% 0);
-  }
-  50% {
-    clip-path: inset(60% 0 30% 0);
-  }
-  60% {
-    clip-path: inset(40% 0 20% 0);
-  }
-  70% {
-    clip-path: inset(70% 0 10% 0);
-  }
-  80% {
-    clip-path: inset(90% 0 5% 0);
-  }
-  90% {
-    clip-path: inset(100% 0 0 0);
+    clip: rect(0, 9999px, 20px, 0);
   }
   100% {
-    clip-path: inset(0 0 90% 0);
+    clip: rect(0, 9999px, 0, 0);
   }
 }
