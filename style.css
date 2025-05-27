@@ -169,6 +169,7 @@ footer {
 }
 
 
+
 @media (max-width: 768px) {
     nav {
         flex-direction: column;
@@ -221,6 +222,7 @@ footer {
 
 
 
+@media (max-width: 768px) {
     nav {
         flex-direction: column;
         align-items: flex-start;
@@ -301,6 +303,7 @@ main {
 }
 
 
+
 body, html {
     min-height: 100vh;
     display: flex;
@@ -310,6 +313,7 @@ body, html {
 main {
     flex: 1;
 }
+
 
 
 .hero,
@@ -329,6 +333,7 @@ main {
 .about {
     gap: 2rem;
 }
+
 
 
 input[type="email"],
@@ -365,6 +370,7 @@ button.btn:hover {
     background-color: #555;
     transform: scale(1.02);
 }
+
 
 
 button,
@@ -442,6 +448,7 @@ input[type="submit"],
 }
 
 
+
 input[type="submit"],
 form button[type="submit"] {
     background-color: #cce7ff;
@@ -460,6 +467,7 @@ form button[type="submit"]:hover {
     background-color: #b3dcff;
     transform: scale(1.02);
 }
+
 
 
 a.btn,
