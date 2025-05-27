@@ -1,38 +1,123 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <title>Matrix Console Test</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Hack Panel</title>
   <style>
     body {
+      margin: 0;
+      padding: 0;
       background: black;
       color: #00ff00;
-      font-family: monospace;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 1.2rem;
+    }
+
+    .terminal {
+      padding: 20px;
+      white-space: pre-wrap;
+    }
+
+    input {
+      background: black;
+      color: #00ff00;
+      border: none;
+      outline: none;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 1.2rem;
+      width: 300px;
+    }
+
+    .command-line {
+      display: flex;
+      align-items: center;
+    }
+
+    .command-line span {
+      margin-right: 5px;
     }
   </style>
 </head>
 <body>
-  <div>
-    <span>&gt; </span><input type="text" id="commandInput" autofocus>
+
+  <div class="terminal" id="terminal">
+    <div>Login: <input type="text" id="login" autofocus></div>
+    <div>Password: <input type="password" id="password"></div>
   </div>
-  <div id="output"></div>
 
   <script>
-    const input = document.getElementById('commandInput');
-    const output = document.getElementById('output');
+    const terminal = document.getElementById('terminal');
+    const loginInput = document.getElementById('login');
+    const passwordInput = document.getElementById('password');
 
-    function log(text) {
-      const line = document.createElement('div');
-      line.textContent = text;
-      output.appendChild(line);
+    function clearTerminal() {
+      terminal.innerHTML = '';
     }
 
-    input.addEventListener('keydown', function(e) {
+    function showCommandPrompt() {
+      const commandLine = document.createElement('div');
+      commandLine.classList.add('command-line');
+
+      const prompt = document.createElement('span');
+      prompt.textContent = '> ';
+      commandLine.appendChild(prompt);
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      commandLine.appendChild(input);
+
+      terminal.appendChild(commandLine);
+      input.focus();
+
+      input.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          const command = input.value.trim();
+          handleCommand(command);
+          input.disabled = true;
+          showCommandPrompt();
+        }
+      });
+    }
+
+    function handleCommand(command) {
+      const output = document.createElement('div');
+
+      if (command === 'help') {
+        output.textContent = 'Dostępne komendy:\n- help\n- status\n- info\n- exit';
+      } else if (command === 'status') {
+        output.textContent = 'Status: Wszystko działa na pełnych obrotach! 💻';
+      } else if (command === 'info') {
+        output.textContent = 'Pirat Game Studio - Admin Panel v1.0';
+      } else if (command === 'exit') {
+        output.textContent = 'Zamykanie sesji...';
+      } else {
+        output.textContent = 'Nieznana komenda: ' + command;
+      }
+
+      terminal.appendChild(output);
+      terminal.scrollTop = terminal.scrollHeight;
+    }
+
+    function checkLogin() {
+      const login = loginInput.value;
+      const password = passwordInput.value;
+
+      if (login === 'admin' && password === '1234') {
+        clearTerminal();
+        terminal.innerHTML += 'Access granted.\nPanel gotowy. Wpisz "help" aby zobaczyć komendy.\n\n';
+        showCommandPrompt();
+      } else {
+        terminal.innerHTML += '\nAccess denied. Try again.<br>';
+      }
+    }
+
+    passwordInput.addEventListener('keypress', function(e) {
       if (e.key === 'Enter') {
-        log('> ' + input.value);
-        input.value = '';
+        checkLogin();
       }
     });
   </script>
 </body>
 </html>
+
