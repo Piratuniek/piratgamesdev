@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Matrix Admin Panel</title>
+  <title>Matrix Console</title>
   <style>
     body {
       margin: 0;
@@ -21,15 +21,19 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      z-index: 0;
-      opacity: 0.4;
+      z-index: 1000;
     }
 
     .terminal {
+      display: none; /* Start hidden */
       padding: 20px;
       white-space: pre-wrap;
       position: relative;
       z-index: 1;
+    }
+
+    .input-line {
+      display: flex;
     }
 
     .cursor {
@@ -39,6 +43,11 @@
       height: 20px;
       margin-left: 5px;
       animation: blink 1s steps(2, start) infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
     }
 
     input {
@@ -56,17 +65,18 @@
   <canvas id="matrix"></canvas>
 
   <div class="terminal" id="terminal">
-    Login: <input type="text" id="login" autofocus><br>
-    Password: <input type="password" id="password"><br>
-    <span class="cursor"></span>
+    Witaj w Matrix Console 🕶️<br>
+    Type 'help' to see available commands.<br>
+    <div class="input-line">
+      <span>&gt; </span><input type="text" id="commandInput" autofocus><span class="cursor"></span>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // Matrix efekt
+    // === MATRIX INTRO EFFECT ===
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');
-
     let width = canvas.width = window.innerWidth;
     let height = canvas.height = window.innerHeight;
 
@@ -93,53 +103,68 @@
       }
     }
 
-    setInterval(draw, 33);
+    let introInterval = setInterval(draw, 33);
 
-    window.addEventListener('resize', () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
-    });
+    // Po 5 sekundach intro znika, terminal startuje
+    setTimeout(() => {
+      clearInterval(introInterval);
+      canvas.style.display = 'none';
+      document.getElementById('terminal').style.display = 'block';
+      document.getElementById('commandInput').focus();
+    }, 5000);
 
-    // Supabase init
-    const supabaseUrl = 'https://YOUR-PROJECT-ID.supabase.co';
-    const supabaseKey = 'YOUR-API-KEY';
+    // === SUPABASE ===
+    const supabaseUrl = 'https://TWOJ_PROJECT_ID.supabase.co';
+    const supabaseKey = 'TWOJ_API_KEY';
     const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-    const loginInput = document.getElementById('login');
-    const passwordInput = document.getElementById('password');
+    // === TERMINAL ===
     const terminal = document.getElementById('terminal');
+    const commandInput = document.getElementById('commandInput');
 
-    async function checkLogin() {
-      const login = loginInput.value;
-      const password = passwordInput.value;
+    function logToTerminal(text) {
+      const newLine = document.createElement('div');
+      newLine.textContent = text;
+      terminal.insertBefore(newLine, terminal.querySelector('.input-line'));
+      terminal.scrollTop = terminal.scrollHeight;
+    }
 
-      // Pobierz dane użytkownika z Supabase
-      const { data, error } = await supabase
-        .from('users') // nazwa tabeli w Supabase
-        .select('*')
-        .eq('username', login)
-        .eq('password', password)
-        .single();
-
-      if (error || !data) {
-        terminal.innerHTML += `\nAccess denied. Try again.<br>`;
+    async function handleCommand(cmd) {
+      cmd = cmd.trim().toLowerCase();
+      if (cmd === 'help') {
+        logToTerminal("Available commands:\n- help\n- ping\n- getusers\n- clear");
+      } else if (cmd === 'ping') {
+        logToTerminal("Pong!");
+      } else if (cmd === 'getusers') {
+        logToTerminal("Fetching users from Supabase...");
+        const { data, error } = await supabase.from('users').select('*');
+        if (error) {
+          logToTerminal("Error fetching users.");
+        } else {
+          data.forEach(user => {
+            logToTerminal(`- ${user.username} / ${user.password}`);
+          });
+        }
+      } else if (cmd === 'clear') {
+        terminal.innerHTML = `<div class="input-line">
+          <span>&gt; </span><input type="text" id="commandInput" autofocus><span class="cursor"></span>
+        </div>`;
+        document.getElementById('commandInput').addEventListener('keydown', handleKeyDown);
       } else {
-        terminal.innerHTML = `
-          Access granted.<br>
-          User: ${data.username}<br>
-          Connecting to Supabase...<br>
-          Panel ready.<br>
-          > Awaiting commands...<br>
-          <span class="cursor"></span>
-        `;
+        logToTerminal(`Unknown command: ${cmd}`);
       }
     }
 
-    passwordInput.addEventListener('keypress', function(e) {
+    function handleKeyDown(e) {
       if (e.key === 'Enter') {
-        checkLogin();
+        const cmd = commandInput.value;
+        logToTerminal(`> ${cmd}`);
+        handleCommand(cmd);
+        commandInput.value = '';
       }
-    });
+    }
+
+    commandInput.addEventListener('keydown', handleKeyDown);
   </script>
 </body>
 </html>
