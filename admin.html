@@ -1,148 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Matrix Console</title>
+  <meta charset="UTF-8">
+  <title>Matrix Console Test</title>
   <style>
     body {
-      margin: 0;
-      padding: 0;
       background: black;
       color: #00ff00;
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 1.2rem;
-      overflow: hidden;
-    }
-
-    canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 1000;
-    }
-
-    .terminal {
-      display: none; /* Start hidden */
-      padding: 20px;
-      white-space: pre-wrap;
-      position: relative;
-      z-index: 1;
-    }
-
-    input {
-      background: black;
-      color: #00ff00;
-      border: none;
-      outline: none;
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 1.2rem;
-      width: 300px;
+      font-family: monospace;
     }
   </style>
 </head>
 <body>
-  <canvas id="matrix"></canvas>
-
-  <div class="terminal" id="terminal">
-    Witaj w Matrix Console 🕶️<br>
-    Type 'help' to see available commands.<br>
-    <div class="input-line">
-      <span>&gt; </span><input type="text" id="commandInput" autofocus>
-    </div>
+  <div>
+    <span>&gt; </span><input type="text" id="commandInput" autofocus>
   </div>
+  <div id="output"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // === MATRIX INTRO EFFECT ===
-    const canvas = document.getElementById('matrix');
-    const ctx = canvas.getContext('2d');
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
+    const input = document.getElementById('commandInput');
+    const output = document.getElementById('output');
 
-    const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
-    const fontSize = 16;
-    const columns = Math.floor(width / fontSize);
-    const drops = Array(columns).fill(1);
-
-    function draw() {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-      ctx.fillRect(0, 0, width, height);
-      ctx.fillStyle = '#0f0';
-      ctx.font = fontSize + 'px Courier New';
-
-      for (let i = 0; i < drops.length; i++) {
-        const text = letters[Math.floor(Math.random() * letters.length)];
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-        if (drops[i] * fontSize > height && Math.random() > 0.975) {
-          drops[i] = 0;
-        }
-
-        drops[i]++;
-      }
-    }
-
-    let introInterval = setInterval(draw, 33);
-
-    // Po 5 sekundach intro znika, terminal startuje
-    setTimeout(() => {
-      clearInterval(introInterval);
-      canvas.style.display = 'none';
-      document.getElementById('terminal').style.display = 'block';
-      document.getElementById('commandInput').focus();
-    }, 5000);
-
-    // === SUPABASE ===
-    const supabaseUrl = 'https://TWOJ_PROJECT_ID.supabase.co';
-    const supabaseKey = 'TWOJ_API_KEY';
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-    // === TERMINAL ===
-    const terminal = document.getElementById('terminal');
-
-    function logToTerminal(text) {
+    function log(text) {
       const line = document.createElement('div');
       line.textContent = text;
-      terminal.insertBefore(line, terminal.querySelector('.input-line'));
-      terminal.scrollTop = terminal.scrollHeight;
+      output.appendChild(line);
     }
 
-    async function handleCommand(cmd) {
-      cmd = cmd.trim().toLowerCase();
-      if (cmd === 'help') {
-        logToTerminal("Available commands:\n- help\n- ping\n- getusers\n- clear");
-      } else if (cmd === 'ping') {
-        logToTerminal("Pong!");
-      } else if (cmd === 'getusers') {
-        logToTerminal("Fetching users from Supabase...");
-        const { data, error } = await supabase.from('users').select('*');
-        if (error) {
-          logToTerminal("Error fetching users.");
-        } else {
-          data.forEach(user => {
-            logToTerminal(`- ${user.username} / ${user.password}`);
-          });
-        }
-      } else if (cmd === 'clear') {
-        // Czyścimy terminal
-        Array.from(terminal.querySelectorAll('div')).forEach(div => {
-          if (!div.classList.contains('input-line')) div.remove();
-        });
-      } else {
-        logToTerminal(`Unknown command: ${cmd}`);
-      }
-    }
-
-    const commandInput = document.getElementById('commandInput');
-    commandInput.addEventListener('keydown', async function(e) {
+    input.addEventListener('keydown', function(e) {
       if (e.key === 'Enter') {
-        const cmd = commandInput.value;
-        logToTerminal(`> ${cmd}`);
-        await handleCommand(cmd);
-        commandInput.value = '';
+        log('> ' + input.value);
+        input.value = '';
       }
     });
   </script>
