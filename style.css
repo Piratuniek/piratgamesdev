@@ -169,7 +169,6 @@ footer {
 }
 
 
-/* === RESPONSYWNE STYLY DLA TELEFONÓW === */
 @media (max-width: 768px) {
     nav {
         flex-direction: column;
@@ -221,8 +220,7 @@ footer {
 }
 
 
-/* === RESPONSYWNE STYLY DLA TELEFONÓW === */
-@media (max-width: 768px) {
+
     nav {
         flex-direction: column;
         align-items: flex-start;
@@ -291,7 +289,7 @@ footer {
 }
 
 
-/* === MINIMALNA WYSOKOŚĆ STRONY NA DESKTOP === */
+
 body, html {
     min-height: 100vh;
     display: flex;
@@ -303,7 +301,6 @@ main {
 }
 
 
-/* === STOPKA PRZYKLEJONA DO DOŁU === */
 body, html {
     min-height: 100vh;
     display: flex;
@@ -315,7 +312,6 @@ main {
 }
 
 
-/* === ZAOKRĄGLONE SZARE TŁO ZA ELEMENTAMI === */
 .hero,
 .funny-contact,
 .about .text {
@@ -325,7 +321,7 @@ main {
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-/* Trochę odstępu nad/below */
+
 .hero {
     margin: 2rem;
 }
@@ -335,7 +331,6 @@ main {
 }
 
 
-/* === LEPSZY WYGLĄD FORMULARZA === */
 input[type="email"],
 textarea {
     width: 100%;
@@ -372,7 +367,6 @@ button.btn:hover {
 }
 
 
-/* === JASNY BŁĘKITNY STYL DLA WSZYSTKICH PRZYCISKÓW === */
 button,
 .btn,
 .nav-links a,
@@ -397,7 +391,7 @@ a.btn:hover {
 }
 
 
-/* === RESET PODKREŚLEŃ NA LINKACH === */
+
 .nav-links a {
     text-decoration: none;
     background-color: #cce7ff;
@@ -410,10 +404,10 @@ a.btn:hover {
 }
 
 .nav-links a::after {
-    content: none; /* usunięcie podkreślenia na hoverze */
+    content: none; 
 }
 
-/* === OGÓLNY STYL WSZYSTKICH PRZYCISKÓW === */
+
 button,
 .btn,
 a.btn,
@@ -438,7 +432,7 @@ input[type="submit"]:hover {
     transform: scale(1.02);
 }
 
-/* === POPRAWA ANIMACJI: POCZĄTEK OD ZAOKRĄGLENIA === */
+
 button,
 .btn,
 a.btn,
@@ -448,7 +442,6 @@ input[type="submit"],
 }
 
 
-/* === BŁĘKITNY STYL DLA FORMULARZA <input type="submit"> === */
 input[type="submit"],
 form button[type="submit"] {
     background-color: #cce7ff;
@@ -469,7 +462,6 @@ form button[type="submit"]:hover {
 }
 
 
-/* === POPRAWKA: BŁĘKITNE LINKI W FORMIE PRZYCISKÓW (.btn, a.btn) === */
 a.btn,
 a.button,
 .about .btn,
