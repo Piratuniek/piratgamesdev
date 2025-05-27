@@ -32,24 +32,6 @@
       z-index: 1;
     }
 
-    .input-line {
-      display: flex;
-    }
-
-    .cursor {
-      display: inline-block;
-      background-color: #00ff00;
-      width: 10px;
-      height: 20px;
-      margin-left: 5px;
-      animation: blink 1s steps(2, start) infinite;
-    }
-
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
-
     input {
       background: black;
       color: #00ff00;
@@ -68,7 +50,7 @@
     Witaj w Matrix Console 🕶️<br>
     Type 'help' to see available commands.<br>
     <div class="input-line">
-      <span>&gt; </span><input type="text" id="commandInput" autofocus><span class="cursor"></span>
+      <span>&gt; </span><input type="text" id="commandInput" autofocus>
     </div>
   </div>
 
@@ -120,12 +102,11 @@
 
     // === TERMINAL ===
     const terminal = document.getElementById('terminal');
-    const commandInput = document.getElementById('commandInput');
 
     function logToTerminal(text) {
-      const newLine = document.createElement('div');
-      newLine.textContent = text;
-      terminal.insertBefore(newLine, terminal.querySelector('.input-line'));
+      const line = document.createElement('div');
+      line.textContent = text;
+      terminal.insertBefore(line, terminal.querySelector('.input-line'));
       terminal.scrollTop = terminal.scrollHeight;
     }
 
@@ -146,25 +127,24 @@
           });
         }
       } else if (cmd === 'clear') {
-        terminal.innerHTML = `<div class="input-line">
-          <span>&gt; </span><input type="text" id="commandInput" autofocus><span class="cursor"></span>
-        </div>`;
-        document.getElementById('commandInput').addEventListener('keydown', handleKeyDown);
+        // Czyścimy terminal
+        Array.from(terminal.querySelectorAll('div')).forEach(div => {
+          if (!div.classList.contains('input-line')) div.remove();
+        });
       } else {
         logToTerminal(`Unknown command: ${cmd}`);
       }
     }
 
-    function handleKeyDown(e) {
+    const commandInput = document.getElementById('commandInput');
+    commandInput.addEventListener('keydown', async function(e) {
       if (e.key === 'Enter') {
         const cmd = commandInput.value;
         logToTerminal(`> ${cmd}`);
-        handleCommand(cmd);
+        await handleCommand(cmd);
         commandInput.value = '';
       }
-    }
-
-    commandInput.addEventListener('keydown', handleKeyDown);
+    });
   </script>
 </body>
 </html>
