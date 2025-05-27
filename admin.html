@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Admin Hack Panel</title>
+  <title>Matrix Admin Panel</title>
   <style>
     body {
       margin: 0;
@@ -41,11 +41,6 @@
       animation: blink 1s steps(2, start) infinite;
     }
 
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
-
     input {
       background: black;
       color: #00ff00;
@@ -66,7 +61,9 @@
     <span class="cursor"></span>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    // Matrix efekt
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d');
 
@@ -103,24 +100,38 @@
       height = canvas.height = window.innerHeight;
     });
 
+    // Supabase init
+    const supabaseUrl = 'https://YOUR-PROJECT-ID.supabase.co';
+    const supabaseKey = 'YOUR-API-KEY';
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
     const loginInput = document.getElementById('login');
     const passwordInput = document.getElementById('password');
     const terminal = document.getElementById('terminal');
 
-    function checkLogin() {
+    async function checkLogin() {
       const login = loginInput.value;
       const password = passwordInput.value;
 
-      if (login === 'admin' && password === '1234') {
+      // Pobierz dane użytkownika z Supabase
+      const { data, error } = await supabase
+        .from('users') // nazwa tabeli w Supabase
+        .select('*')
+        .eq('username', login)
+        .eq('password', password)
+        .single();
+
+      if (error || !data) {
+        terminal.innerHTML += `\nAccess denied. Try again.<br>`;
+      } else {
         terminal.innerHTML = `
           Access granted.<br>
+          User: ${data.username}<br>
           Connecting to Supabase...<br>
           Panel ready.<br>
           > Awaiting commands...<br>
           <span class="cursor"></span>
         `;
-      } else {
-        terminal.innerHTML += `\nAccess denied. Try again.<br>`;
       }
     }
 
